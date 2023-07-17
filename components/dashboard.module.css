@@ -1,0 +1,53 @@
+/* DASHBOARD */
+
+.dashboard {
+  height: 100vh;
+  width: 200px;
+  background-color: #0c0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  font-family: 'Comfortaa', cursive;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userName {
+  color: #fff;
+  margin-top: 10px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.navLink {
+  color: #fff;
+  text-decoration: none;
+  margin: 10px 0;
+}
+
+.logoutButton {
+  color: #fff;
+  background-color: #c0392b;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}

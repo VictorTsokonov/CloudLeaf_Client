@@ -1,0 +1,67 @@
+.loginContainer {
+  display: flex;
+  height: 100vh;
+}
+
+.imageContainer {
+  flex: 8; /* Image takes up 70% */
+  position: relative;
+}
+
+.authContainer {
+  flex: 2; /* AuthContainer takes up 30% */
+  background-color: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.authCard {
+  width: 100%;
+  height: fit-content;
+  /* border: 2px solid #ffffff; Add a border
+  border-radius: 16px; */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.authButton {
+  display: grid; /* Changed from flex */
+  grid-template-columns: 1fr auto; /* Defines two columns: first one takes up remaining space, second one is as wide as content (image) */
+  align-items: center;
+  padding: 10px;
+  width: 220px; /* adjust this as necessary */
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #ffffff;
+}
+.authButton:hover {
+  opacity: 0.5; /* Adjust hover effect as needed */
+}
+
+/* Button specific colors */
+.authButton:nth-child(1) {
+  background-color: black;
+}
+
+.authButton:nth-child(2) {
+  background-color: rgb(255, 78, 2);
+}
+
+.authButton:nth-child(3) {
+  background-color: rgb(38, 0, 255);
+}
+
+.repoImg {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 1.6rem;
+  filter: invert(92%) sepia(8%) saturate(128%) hue-rotate(169deg)
+    brightness(84%) contrast(90%);
+}

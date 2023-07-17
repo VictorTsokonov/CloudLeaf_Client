@@ -1,0 +1,46 @@
+.main {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  background-color: #110e0f;
+}
+
+/* .dashboard {
+  height: 100vh;
+  width: 200px;
+  background-color: #0c0a0a;
+  display: inline-block;
+} */
+
+.table {
+  width: 70vw;
+  height: 50vh;
+  background-color: #110e0f;
+  display: inline-block;
+  margin: 3rem;
+  overflow-y: auto;
+  position: relative;
+  /* scroll-behavior: smooth; */
+  /* border-radius: 17px; */
+}
+
+.header {
+  /* Add a margin-bottom for spacing */
+  margin-bottom: 1.5rem;
+  font-family: "Comfortaa", cursive;
+  font-size: 2rem;
+  text-align: left;
+  /* border-bottom: 1px solid #bfc3c7; */
+}
+
+.header h1 {
+  display: flex;
+  align-items: baseline;
+}
+
+.repoImg {
+  margin-right: 10px;
+  width: 1.6rem;
+  filter: invert(92%) sepia(8%) saturate(128%) hue-rotate(169deg)
+    brightness(84%) contrast(90%);
+}
