@@ -1,11 +1,11 @@
 import styles from "./RepoCard.module.css";
 
-function RepoCard({ name, cloneUrl, sshUrl, deployHandler }) {
+function RepoCard({ name, cloneUrl, sshUrl, deployHandler, fullName }) {
   function DeployHandler() {
-    console.log("Name of repo: ", name);
+    console.log("Name of repo: ", fullName);
     console.log("Clone URL: ", cloneUrl);
     console.log("SSH URL: ", sshUrl);
-    deployHandler(name, cloneUrl, sshUrl);
+    deployHandler(fullName, cloneUrl, sshUrl);
   }
   return (
     <div className={styles.table}>

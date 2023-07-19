@@ -8,9 +8,9 @@ async function createRepos(userID, repos) {
   const promises = [];
 
   repos.forEach((repo) => {
-    const { name, clone_url, ssh_url } = repo;
+    const { full_name, clone_url, ssh_url } = repo;
     const promise = fetch(
-      `http://localhost:8080/api/repos?userID=${userID}&repoName=${name}&cloneUrl=${clone_url}&sshUrl=${ssh_url}`,
+      `http://localhost:8080/api/repos?userID=${userID}&repoName=${full_name}&cloneUrl=${clone_url}&sshUrl=${ssh_url}`,
       {
         method: "POST",
       }

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import createUser from "@/utils/createUser";
 import createRepos from "@/utils/createRepo";
+import deployRepo from "../utils/deployRepo";
 
 import Dashboard from "@/components/dashboard";
 import RepoCard from "@/components/RepoCard";
@@ -164,9 +165,10 @@ function Repos() {
     }
   }, [userData.login, repos]); // Include reposData in the dependency list if its value can change in the component
 
-  function DeployHandler(name, cloneUrl, sshUrl, url, permissions) {
+  function DeployHandler(fullName, cloneUrl, sshUrl) {
     // the function should expect some information about the repo
-    console.log("Deploy!");
+    deployRepo(fullName, cloneUrl, sshUrl);
+    console.log("DEPLOYING >>>");
   }
 
   return (
@@ -195,6 +197,7 @@ function Repos() {
               name={repo.name}
               cloneUrl={repo.clone_url}
               sshUrl={repo.ssh_url}
+              fullName={repo.full_name}
               deployHandler={DeployHandler}
             />
           ))}
