@@ -73,62 +73,6 @@ function Repos() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   console.log(typeof window);
-  //   const queryString = window.location.search;
-  //   const urlParams = new URLSearchParams(queryString);
-  //   const codeParams = urlParams.get("code");
-  //   const fetchRepos = async () => {
-  //     if (!localStorage.getItem("accessToken")) {
-  //       await getAccessToken(codeParams);
-  //     }
-  //     await getRepos();
-  //     setShouldRender(true);
-  //   };
-
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   let user_res;
-
-  //   fetchRepos().then(() => {
-  //     createUser(userData.login, accessToken).then((user) => {
-  //       console.log(user); // Handle user data here
-  //       user_res = user;
-  //     });
-  //   });
-
-  //   // CREATE IN DATABASE !!!
-  // }, [getAccessToken, getRepos]);
-
-  // useEffect(() => {
-  //   const fetchRepos = async () => {
-  //     const queryString = window.location.search;
-  //     const urlParams = new URLSearchParams(queryString);
-  //     const codeParams = urlParams.get("code");
-
-  //     if (!localStorage.getItem("accessToken")) {
-  //       await getAccessToken(codeParams);
-  //     }
-
-  //     const accessToken = localStorage.getItem("accessToken");
-
-  //     await getRepos();
-  //     setShouldRender(true);
-
-  //     if (accessToken && userData.login) {
-  //       createUser(userData.login, accessToken)
-  //         .then((user) => {
-  //           console.log(user);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error creating user:", error);
-  //         });
-  //     }
-  //   };
-
-  //   fetchRepos();
-  // }, [getAccessToken, getRepos, userData.login]);
-
-  // First useEffect for getting access token and fetching repos
   useEffect(() => {
     const fetchRepos = async () => {
       const queryString = window.location.search;
@@ -165,10 +109,11 @@ function Repos() {
     }
   }, [userData.login, repos]); // Include reposData in the dependency list if its value can change in the component
 
-  function DeployHandler(fullName, cloneUrl, sshUrl) {
+  async function DeployHandler(fullName, cloneUrl, sshUrl) {
     // the function should expect some information about the repo
-    deployRepo(fullName, cloneUrl, sshUrl);
-    console.log("DEPLOYING >>>");
+    // const status = await deployRepo(fullName, cloneUrl, sshUrl);
+    // console.log("DEPLOYING >>>");
+    // console.log(status);
   }
 
   return (
