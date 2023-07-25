@@ -25,33 +25,65 @@ function Repos() {
       console.log("no access token found");
     } else if (accessToken) {
       try {
-        const response = await fetch(
-          "https://api.github.com/user/repos?type=owner",
-          {
-            headers,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setRepos(data);
-
-        // Fetch user data here
+        // Fetch user data from GitHub
         const responseUser = await fetch("https://api.github.com/user", {
           headers,
         });
-
         if (!responseUser.ok) {
           throw new Error(`HTTP error! status: ${responseUser.status}`);
         }
-
         const dataUser = await responseUser.json();
-        // console.log(dataUser);
         setUserData(dataUser);
+
+        // Create user in the backend
+        const user = await createUser(dataUser.login, accessToken);
+        console.log(user);
+
+        // Fetch user data from backend to get the user_id
+        const responseBackendUser = await fetch(
+          `http://localhost:8080/api/users/token/${accessToken}`
+        );
+        if (!responseBackendUser.ok) {
+          throw new Error(`HTTP error! status: ${responseBackendUser.status}`);
+        }
+        const dataBackendUser = await responseBackendUser.json();
+
+        // Fetch repos from backend
+        const responseRepos = await fetch(
+          `http://localhost:8080/api/repos/user/${dataUser.login}`
+        );
+        if (!responseRepos.ok) {
+          throw new Error(`HTTP error! status: ${responseRepos.status}`);
+        }
+
+        let dataRepos = await responseRepos.json();
+        if (!dataRepos.length) {
+          // Fetch repos from GitHub if no repos found in backend
+          const responseGithubRepos = await fetch(
+            "https://api.github.com/user/repos?type=owner",
+            {
+              headers,
+            }
+          );
+
+          if (!responseGithubRepos.ok) {
+            throw new Error(
+              `HTTP error! status: ${responseGithubRepos.status}`
+            );
+          }
+
+          const dataGithubRepos = await responseGithubRepos.json();
+
+          // Create repos in backend using the user_id from backend
+          dataRepos = await createRepos(
+            dataBackendUser.user_id,
+            dataGithubRepos
+          );
+        }
+
+        console.log(dataRepos); // Array of created repos
+        setRepos(dataRepos);
+        setShouldRender(false);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -90,25 +122,6 @@ function Repos() {
     fetchRepos();
   }, [getAccessToken, getRepos]);
 
-  // Second useEffect for creating the user
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (accessToken && userData.login) {
-      createUser(userData.login, accessToken)
-        .then((user) => {
-          console.log(user);
-          return createRepos(user.user_id, repos); // Call createRepos function with user_id and reposData
-        })
-        .then((repos) => {
-          console.log(repos); // Array of created repos
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }
-  }, [userData.login, repos]); // Include reposData in the dependency list if its value can change in the component
-
   async function DeployHandler(fullName, cloneUrl, sshUrl) {
     // the function should expect some information about the repo
     // const status = await deployRepo(fullName, cloneUrl, sshUrl);
@@ -121,28 +134,27 @@ function Repos() {
       {shouldRender && <Dashboard userData={userData} />}
       {/* Pass userData as props */}
       <div className={styles.page}>
+        <h1>
+          <Image
+            src="/repo.svg"
+            alt="Repository Icon"
+            width={20}
+            height={20}
+            className={styles.repoImg}
+          />
+          Repositories
+        </h1>
         <div className={styles.table}>
-          <div className={styles.header}>
-            {/* Header */}
-            <h1>
-              <Image
-                src="/repo.svg"
-                alt="Repository Icon"
-                width={20}
-                height={20}
-                className={styles.repoImg}
-              />
-              Repositories
-            </h1>
-          </div>
+          <div className={styles.header}>{/* Header */}</div>
           {/* Table */}
           {repos.map((repo) => (
             <RepoCard
-              key={repo.id}
-              name={repo.name}
-              cloneUrl={repo.clone_url}
-              sshUrl={repo.ssh_url}
-              fullName={repo.full_name}
+              key={repo.repoId}
+              cloneUrl={repo.cloneUrl}
+              sshUrl={repo.sshUrl}
+              fullName={repo.repoName}
+              repoStatus={repo.status}
+              repoIp={repo.ec2PublicIp}
               deployHandler={DeployHandler}
             />
           ))}
