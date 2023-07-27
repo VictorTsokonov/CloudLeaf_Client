@@ -29,42 +29,39 @@ function RepoCard({
       }
     );
 
-    const status = await deployRepo(fullName, cloneUrl, sshUrl);
+    const info = await deployRepo(fullName, cloneUrl, sshUrl);
     console.log("DEPLOYING >>>");
-    console.log(status);
-    deployHandler(fullName, cloneUrl, sshUrl);
+    console.log(info);
 
-    if (status.length !== 0) {
-      // console.log("Status FETCHING: ", status[0]);
-      const info = await checkStatus(status[0]); // status[0] is the deployment id + ":8080" is the port
+    if (info.length !== 0) {
       console.log("INFO >>>");
       console.log(info);
       setIp(info[0]);
       setId(info[1]);
       console.log(info);
-      await fetch(
-        `http://localhost:8080/api/repos/ipaddress?repoName=${fullName}&ipAddress=${info[0]}`,
-        {
-          method: "PUT",
-        }
-      );
+      // await fetch(
+      //   `http://localhost:8080/api/repos/ipaddress?repoName=${fullName}&ipAddress=${info[0]}`,
+      //   {
+      //     method: "PUT",
+      //   }
+      // );
 
       setStatus("Deployed");
-      await fetch(
-        `http://localhost:8080/api/repos/status?repoName=${fullName}&status=Deployed`,
-        {
-          method: "PUT",
-        }
-      );
+      // await fetch(
+      //   `http://localhost:8080/api/repos/status?repoName=${fullName}&status=Deployed`,
+      //   {
+      //     method: "PUT",
+      //   }
+      // );
       setDisabled(false);
     } else {
       setStatus("Deployed");
-      await fetch(
-        `http://localhost:8080/api/repos/status?repoName=${fullName}&status=Deployed`,
-        {
-          method: "PUT",
-        }
-      );
+      // await fetch(
+      //   `http://localhost:8080/api/repos/status?repoName=${fullName}&status=Deployed`,
+      //   {
+      //     method: "PUT",
+      //   }
+      // );
       console.log("SOMETHING WRONG HAPPENED");
     }
     setDisabled(false);
