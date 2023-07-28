@@ -1,8 +1,9 @@
 .main {
   display: flex;
-  /* justify-content: center; */
+  justify-content: flex-start;
   align-items: center;
   background-color: #110e0f;
+  width: 100%;
 }
 
 /* .dashboard {

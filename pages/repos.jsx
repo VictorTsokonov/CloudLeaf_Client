@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import createUser from "@/utils/createUser";
 import createRepos from "@/utils/createRepo";
 import deployRepo from "../utils/deployRepo";
+import Configure from "@/components/configure";
 
 import Dashboard from "@/components/dashboard";
 import RepoCard from "@/components/RepoCard";
@@ -14,6 +15,12 @@ function Repos() {
   const [repos, setRepos] = useState([]);
   const [shouldRender, setShouldRender] = useState(false);
   const [userData, setUserData] = useState({}); // <- New state to store user data
+  const [configuration, setConfiguration] = useState({
+    isConfiguring: false,
+    cloneUrl: null,
+    sshUrl: null,
+    fullName: null,
+  });
 
   const getRepos = useCallback(async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -82,7 +89,23 @@ function Repos() {
         }
 
         console.log(dataRepos); // Array of created repos
-        setRepos(dataRepos);
+        setRepos((prevState) => {
+          const newState = [...prevState]; // This creates a new array
+          // make changes to newState here based on dataRepos
+          for (let i = 0; i < dataRepos.length; i++) {
+            let index = newState.findIndex(
+              (repo) => repo.repoId === dataRepos[i].repoId
+            );
+            if (index !== -1) {
+              // Create a new object with the same properties
+              newState[index] = { ...newState[index], ...dataRepos[i] };
+            } else {
+              newState.push(dataRepos[i]);
+            }
+          }
+          return newState;
+        });
+
         setShouldRender(false);
       } catch (error) {
         console.error("Error:", error);
@@ -116,51 +139,64 @@ function Repos() {
       }
 
       await getRepos();
+      // console.log("OMG");
+      // console.log(repos);
       setShouldRender(true);
     };
 
+    // Fetch immediately and then set the interval
     fetchRepos();
+    const intervalId = setInterval(fetchRepos, 5000); // every 5 seconds
+    // Clear interval on component unmount
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [getAccessToken, getRepos]);
 
-  async function DeployHandler(fullName, cloneUrl, sshUrl) {
-    // the function should expect some information about the repo
-    // const status = await deployRepo(fullName, cloneUrl, sshUrl);
-    // console.log("DEPLOYING >>>");
-    // console.log(status);
-  }
+  useEffect(() => {
+    setShouldRender(true);
+  }, [repos]);
 
   return (
     <div className={styles.main}>
       {shouldRender && <Dashboard userData={userData} />}
       {/* Pass userData as props */}
-      <div className={styles.page}>
-        <h1>
-          <Image
-            src="/repo.svg"
-            alt="Repository Icon"
-            width={20}
-            height={20}
-            className={styles.repoImg}
-          />
-          Repositories
-        </h1>
-        <div className={styles.table}>
-          <div className={styles.header}>{/* Header */}</div>
-          {/* Table */}
-          {repos.map((repo) => (
-            <RepoCard
-              key={repo.repoId}
-              cloneUrl={repo.cloneUrl}
-              sshUrl={repo.sshUrl}
-              fullName={repo.repoName}
-              repoStatus={repo.status}
-              repoIp={repo.ec2PublicIp}
-              deployHandler={DeployHandler}
+      {!configuration.isConfiguring ? (
+        <div className={styles.page}>
+          <h1>
+            <Image
+              src="/repo.svg"
+              alt="Repository Icon"
+              width={20}
+              height={20}
+              className={styles.repoImg}
             />
-          ))}
+            Repositories
+          </h1>
+          <div className={styles.table}>
+            <div className={styles.header}>{/* Header */}</div>
+            {/* Table */}
+            {repos.map((repo) => (
+              <RepoCard
+                key={repo.repoId}
+                cloneUrl={repo.cloneUrl}
+                sshUrl={repo.sshUrl}
+                fullName={repo.repoName}
+                repoStatus={repo.status}
+                repoIp={repo.ec2PublicIp}
+                setConfiguration={setConfiguration}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className={styles.emptySpace}></div>
+      ) : (
+        <Configure
+          setConfiguration={setConfiguration}
+          cloneUrl={configuration.cloneUrl}
+          sshUrl={configuration.sshUrl}
+          fullName={configuration.fullName}
+        />
+      )}
     </div>
   );
 }

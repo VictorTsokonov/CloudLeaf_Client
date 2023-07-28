@@ -1,13 +1,17 @@
-async function deployRepo(fullName, cloneUrl, sshUrl) {
-  const response = await fetch(
-    `http://localhost:8080/api/deploy?full_name=${fullName}&clone_url=${cloneUrl}&ssh_url=${sshUrl}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+async function deployRepo(fullName, cloneUrl, sshUrl, port, dependenciesList) {
+  // console.log({ fullName, cloneUrl, sshUrl, port, dependenciesList });
+
+  const response = await fetch(`http://localhost:8080/api/deploy`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      full_name: fullName,
+      clone_url: cloneUrl,
+      ssh_url: sshUrl,
+      port: port,
+      dependencies: JSON.stringify(dependenciesList),
+    },
+  });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -17,6 +21,3 @@ async function deployRepo(fullName, cloneUrl, sshUrl) {
 }
 
 export default deployRepo;
-
-//  http://localhost:8080/api/deploy/
-// `http://localhost:8080/api/deploy?full_name=TestHostRepo&clone_url=https://github.com/VictorTsokonov/TestHostRepo.git&ssh_url=git@github.com:VictorTsokonov/TestHostRepo.git`

@@ -34,6 +34,10 @@
   color: #bfc3c7;
 }
 
+.button:disabled {
+  background-color: #0a5e44;
+}
+
 .buttonTer {
   justify-self: end;
   margin-right: 1.2rem;
