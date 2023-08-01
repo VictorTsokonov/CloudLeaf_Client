@@ -4,17 +4,16 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import createUser from "@/utils/createUser";
 import createRepos from "@/utils/createRepo";
-import Configure from "@/components/configure";
+import DbConfigure from "@/pages/dbconfigure";
 import { useRepoContext } from "@/contexts/RepoContext";
-import { useUserData } from "@/contexts/UserDataContext";
 
 import Dashboard from "@/components/dashboard";
-import RepoCard from "@/components/RepoCard";
+import DatabaseCard from "@/components/databaseCard";
 
 function Repos() {
-  const { userData, setUserData } = useUserData();
   const { repos, setRepos } = useRepoContext();
   const [shouldRender, setShouldRender] = useState(false);
+  const [userData, setUserData] = useState({}); // <- New state to store user data
   const [configuration, setConfiguration] = useState({
     isConfiguring: false,
     cloneUrl: null,
@@ -89,8 +88,27 @@ function Repos() {
         }
 
         console.log(dataRepos); // Array of created repos
+        setRepos((prevState) => {
+          let newState = [...prevState];
 
-        setRepos(dataRepos);
+          dataRepos.forEach((repo) => {
+            const existingRepoIndex = newState.findIndex(
+              (r) => r.repoId === repo.repoId
+            );
+
+            if (existingRepoIndex !== -1) {
+              newState = [
+                ...newState.slice(0, existingRepoIndex),
+                { ...newState[existingRepoIndex], ...repo },
+                ...newState.slice(existingRepoIndex + 1),
+              ];
+            } else {
+              newState = [...newState, repo];
+            }
+          });
+          console.log(newState);
+          return newState;
+        });
 
         setShouldRender(false);
       } catch (error) {
@@ -137,15 +155,15 @@ function Repos() {
     };
   }, [getAccessToken, getRepos]);
 
-  // useEffect(() => {
-  //   setShouldRender(true);
-  // }, [repos]);
+  useEffect(() => {
+    setShouldRender(true);
+  }, [repos]);
 
   return (
     <div className={styles.main}>
       {shouldRender && <Dashboard userData={userData} />}
       {/* Pass userData as props */}
-      {!configuration.isConfiguring ? (
+      <div className={styles.page}>
         <div className={styles.table}>
           <div className={styles.header}>
             {/* Header */}
@@ -157,32 +175,23 @@ function Repos() {
                 height={20}
                 className={styles.repoImg}
               />
-              Repositories
+              Databases
             </h1>
           </div>
-          <div className={styles.page}>
-            {/* Table */}
-            {repos.map((repo) => (
-              <RepoCard
-                key={repo.repoId}
-                cloneUrl={repo.cloneUrl}
-                sshUrl={repo.sshUrl}
-                fullName={repo.repoName}
-                repoStatus={repo.status}
-                repoIp={repo.ec2PublicIp}
-                setConfiguration={setConfiguration}
-              />
-            ))}
-          </div>
+          {/* Table */}
+          {repos.map((repo) => (
+            <DatabaseCard
+              key={repo.repoId}
+              cloneUrl={repo.cloneUrl}
+              sshUrl={repo.sshUrl}
+              fullName={repo.repoName}
+              repoStatus={repo.status}
+              repoIp={repo.ec2PublicIp}
+              setConfiguration={setConfiguration}
+            />
+          ))}
         </div>
-      ) : (
-        <Configure
-          setConfiguration={setConfiguration}
-          cloneUrl={configuration.cloneUrl}
-          sshUrl={configuration.sshUrl}
-          fullName={configuration.fullName}
-        />
-      )}
+      </div>
     </div>
   );
 }

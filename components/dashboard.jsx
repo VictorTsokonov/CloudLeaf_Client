@@ -2,6 +2,7 @@ import styles from "./dashboard.module.css";
 import Image from "next/image";
 
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 function Dashboard({ userData }) {
   // <- Accept userData as props
@@ -28,12 +29,15 @@ function Dashboard({ userData }) {
         <h2 className={styles.userName}>{userData.login}</h2>
       </div>
       <nav className={styles.nav}>
-        <a className={styles.navLink} href="/profile">
-          Profile
-        </a>
-        <a className={styles.navLink} href="/repositories">
+        <Link className={styles.navLink} href="/dbconfigure">
+          Create Database
+        </Link>
+        <Link className={styles.navLink} href="/databases">
+          Databases
+        </Link>
+        <Link className={styles.navLink} href="/repos">
           Repositories
-        </a>
+        </Link>
         <a className={styles.navLink} href="/info">
           Info
         </a>

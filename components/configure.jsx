@@ -13,36 +13,46 @@ function Configure({ fullName, cloneUrl, sshUrl, onDeploy, setConfiguration }) {
   };
 
   const dependencies = {
-    languages: ["Java", "C++", "JavaScript", "Python", "Ruby", "Go", "PHP"],
+    languages: [
+      "Java",
+      //  "C++",
+      //   "JavaScript",
+      //   "Python",
+      //    "Ruby",
+      //     "Go",
+      //      "PHP"
+    ],
     packageManagers: [
       "npm",
-      "Yarn",
-      "pip",
-      "Maven",
-      "Gradle",
-      "RubyGems",
-      "Bundler",
+      // "Yarn",
+      // "pip",
+      // "Maven",
+      // "Gradle",
+      // "RubyGems",
+      // "Bundler",
     ],
-    frameworks: [
-      "Node.js",
-      "React",
-      "Next.js",
-      "Spring",
-      "Express",
-      "Django",
-      "Flask",
-    ],
-    databases: [
-      "MySQL",
-      "PostgreSQL",
-      "SQLite",
-      "MongoDB",
-      "Cassandra",
-      "Redis",
-    ],
-    webServers: ["Apache", "Nginx", "IIS"],
-    otherTools: ["Docker", "Kubernetes", "Jenkins"],
+    // frameworks: [
+    //   "Node.js",
+    //   "React",
+    //   "Next.js",
+    //   "Spring",
+    //   "Express",
+    //   "Django",
+    //   "Flask",
+    // ],
+    // databases: [
+    //   "MySQL",
+    //   "PostgreSQL",
+    //   "SQLite",
+    //   "MongoDB",
+    //   "Cassandra",
+    //   "Redis",
+    // ],
+    // webServers: ["Apache", "Nginx", "IIS"],
+    // otherTools: ["Docker", "Kubernetes", "Jenkins"],
   };
+
+  const deps = { dependencies: ["java", "npm"] };
 
   const handleChange = (e) => {
     if (e.target.checked) {
@@ -81,12 +91,12 @@ function Configure({ fullName, cloneUrl, sshUrl, onDeploy, setConfiguration }) {
             onChange={(e) => setPort(e.target.value)}
           />
         </label>
-        {Object.keys(dependencies).map((category) => (
+        {Object.keys(deps).map((category) => (
           <div key={category} className={styles.category}>
             <label className={styles.label}>{category}:</label>
             <div className={styles.dependenciesSubContainer}>
               <div className={styles.gridContainer}>
-                {dependencies[category].map((dependency, index) => (
+                {deps[category].map((dependency, index) => (
                   <div key={index} className={styles.dependencyItem}>
                     <label>
                       <input

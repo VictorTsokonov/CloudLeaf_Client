@@ -1,0 +1,151 @@
+.configureContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #110e0f;
+  width: calc(100% - 200px);
+  height: 100vh;
+
+  /* position: relative; */
+}
+
+.configureContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  /* gap: 1rem; */
+}
+
+.header {
+  font-family: "Comfortaa", cursive;
+  font-size: 2rem;
+  text-align: left;
+  color: #fff;
+}
+
+.label {
+  margin-top: 0.5rem;
+  color: #fff;
+  font-family: "Comfortaa", cursive;
+  font-size: 1.25rem;
+  text-decoration: underline;
+}
+
+.input,
+.select {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1.5px solid #0f8761;
+  border-radius: 10px;
+  color: #fff;
+  outline: none;
+}
+
+.input {
+  background-color: #110e0f;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.button {
+  display: inline-flex;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #110e0f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  border: 1.5px solid #0f8761;
+  font-family: "Comfortaa", cursive;
+  /* display: inline; */
+
+  cursor: pointer;
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+
+  /* position: absolute; Changed this line */
+  /* bottom: 20px; Changed this line */
+  /* right: 20px; Changed this line */
+}
+
+.languagesAndFrameworksContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.languagesAndFrameworksSubContainer {
+  display: flex;
+  flex-direction: column;
+  margin-right: 4rem;
+}
+
+/* CHECKBOX */
+
+.checkbox {
+  appearance: none;
+  background-color: #110e0f;
+  border: 1.5px solid #0f8761; /* green */
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkbox:checked {
+  background-color: #0f8761;
+}
+
+.checkbox:checked:after {
+  content: "";
+  display: block;
+  position: relative;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0px;
+}
+
+.dependenciesSubContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-right: 4rem;
+  width: 100%;
+}
+
+.gridContainer {
+  display: grid;
+  width: 40rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-flow: row;
+}
+
+.dependencyItem {
+  display: flex;
+  align-items: center;
+}
+
+.dependencyCategory {
+  margin-bottom: 1rem;
+}
+
+.category {
+  margin-top: 1rem;
+}
