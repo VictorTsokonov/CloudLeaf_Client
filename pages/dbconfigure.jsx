@@ -28,12 +28,14 @@ function DbConfigure() {
 
     // Create the payload
     const payload = {
-      githubname: userData.login,
+      githubName: userData.login,
       databaseName: database,
       username: username,
       password: password,
       type: selected,
     };
+
+    Router.push("/databases");
 
     // Send the POST request
     try {

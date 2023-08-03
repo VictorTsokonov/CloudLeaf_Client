@@ -1,172 +1,53 @@
 import styles from "./Repos.module.css";
 import Image from "next/image";
-
 import { useCallback, useEffect, useState } from "react";
-import createUser from "@/utils/createUser";
-import createRepos from "@/utils/createRepo";
-import DbConfigure from "@/pages/dbconfigure";
-import { useRepoContext } from "@/contexts/RepoContext";
-
+import { useUserData } from "@/contexts/UserDataContext";
 import Dashboard from "@/components/dashboard";
 import DatabaseCard from "@/components/databaseCard";
 
-function Repos() {
-  const { repos, setRepos } = useRepoContext();
-  const [shouldRender, setShouldRender] = useState(false);
-  const [userData, setUserData] = useState({}); // <- New state to store user data
-  const [configuration, setConfiguration] = useState({
-    isConfiguring: false,
-    cloneUrl: null,
-    sshUrl: null,
-    fullName: null,
-  });
+function Databases() {
+  const { userData } = useUserData();
+  const [databases, setDatabases] = useState([]);
 
-  const getRepos = useCallback(async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/vnd.github+json",
-    };
-    if (!accessToken) {
-      console.log("no access token found");
-    } else if (accessToken) {
-      try {
-        // Fetch user data from GitHub
-        const responseUser = await fetch("https://api.github.com/user", {
-          headers,
-        });
-        if (!responseUser.ok) {
-          throw new Error(`HTTP error! status: ${responseUser.status}`);
-        }
-        const dataUser = await responseUser.json();
-        setUserData(dataUser);
-
-        // Create user in the backend
-        const user = await createUser(dataUser.login, accessToken);
-        console.log(user);
-
-        // Fetch user data from backend to get the user_id
-        const responseBackendUser = await fetch(
-          `http://localhost:8080/api/users/token/${accessToken}`
-        );
-        if (!responseBackendUser.ok) {
-          throw new Error(`HTTP error! status: ${responseBackendUser.status}`);
-        }
-        const dataBackendUser = await responseBackendUser.json();
-
-        // Fetch repos from backend
-        const responseRepos = await fetch(
-          `http://localhost:8080/api/repos/user/${dataUser.login}`
-        );
-        if (!responseRepos.ok) {
-          throw new Error(`HTTP error! status: ${responseRepos.status}`);
-        }
-
-        let dataRepos = await responseRepos.json();
-        if (!dataRepos.length) {
-          // Fetch repos from GitHub if no repos found in backend
-          const responseGithubRepos = await fetch(
-            "https://api.github.com/user/repos?type=owner",
-            {
-              headers,
-            }
-          );
-
-          if (!responseGithubRepos.ok) {
-            throw new Error(
-              `HTTP error! status: ${responseGithubRepos.status}`
-            );
-          }
-
-          const dataGithubRepos = await responseGithubRepos.json();
-
-          // Create repos in backend using the user_id from backend
-          dataRepos = await createRepos(
-            dataBackendUser.user_id,
-            dataGithubRepos
-          );
-        }
-
-        console.log(dataRepos); // Array of created repos
-        setRepos((prevState) => {
-          let newState = [...prevState];
-
-          dataRepos.forEach((repo) => {
-            const existingRepoIndex = newState.findIndex(
-              (r) => r.repoId === repo.repoId
-            );
-
-            if (existingRepoIndex !== -1) {
-              newState = [
-                ...newState.slice(0, existingRepoIndex),
-                { ...newState[existingRepoIndex], ...repo },
-                ...newState.slice(existingRepoIndex + 1),
-              ];
-            } else {
-              newState = [...newState, repo];
-            }
-          });
-          console.log(newState);
-          return newState;
-        });
-
-        setShouldRender(false);
-      } catch (error) {
-        console.error("Error:", error);
+  const getDbParameters = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/ssm/parameters?githubName=${userData.login}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const parameters = await response.json();
+      console.log(`DB Parameters for ${userData.login}:`, parameters);
+      setDatabases(parameters);
+    } catch (error) {
+      console.error("Error fetching DB parameters:", error);
     }
-  }, []);
-
-  const getAccessToken = useCallback(async (code) => {
-    const response = await fetch(
-      "http://localhost:8080/getAccessToken?code=" + code,
-      {
-        method: "GET",
-      }
-    );
-    const data = await response.json();
-    console.log(data);
-    if (data.access_token) {
-      localStorage.setItem("accessToken", data.access_token);
-      setShouldRender(true);
-    }
-  }, []);
+  }, [userData.login]);
 
   useEffect(() => {
-    const fetchRepos = async () => {
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      const codeParams = urlParams.get("code");
+    // Immediately invoke the function
+    getDbParameters();
 
-      if (!localStorage.getItem("accessToken")) {
-        await getAccessToken(codeParams);
-      }
+    // Set an interval to run the function every 5 seconds
+    const intervalId = setInterval(() => {
+      getDbParameters();
+    }, 5000); // 5000 milliseconds (5 seconds)
 
-      await getRepos();
-      setShouldRender(true);
-    };
-
-    // Fetch immediately and then set the interval
-    fetchRepos();
-    const intervalId = setInterval(fetchRepos, 5000); // every 5 seconds
-    // Clear interval on component unmount
+    // Return a cleanup function to clear the interval when the component is unmounted
     return () => {
       clearInterval(intervalId);
     };
-  }, [getAccessToken, getRepos]);
 
-  useEffect(() => {
-    setShouldRender(true);
-  }, [repos]);
+    // Include getDbParameters in the dependency array to ensure that the effect is updated if it changes
+  }, [getDbParameters]);
 
   return (
     <div className={styles.main}>
-      {shouldRender && <Dashboard userData={userData} />}
-      {/* Pass userData as props */}
+      <Dashboard userData={userData} />
       <div className={styles.page}>
         <div className={styles.table}>
           <div className={styles.header}>
-            {/* Header */}
             <h1>
               <Image
                 src="/repo.svg"
@@ -178,16 +59,14 @@ function Repos() {
               Databases
             </h1>
           </div>
-          {/* Table */}
-          {repos.map((repo) => (
+          {databases.map((database, index) => (
             <DatabaseCard
-              key={repo.repoId}
-              cloneUrl={repo.cloneUrl}
-              sshUrl={repo.sshUrl}
-              fullName={repo.repoName}
-              repoStatus={repo.status}
-              repoIp={repo.ec2PublicIp}
-              setConfiguration={setConfiguration}
+              key={index}
+              databaseName={database.databaseName}
+              connectionUrl={database.connectionUrl}
+              username={database.username}
+              port={database.port}
+              githubName={userData.login}
             />
           ))}
         </div>
@@ -196,4 +75,4 @@ function Repos() {
   );
 }
 
-export default Repos;
+export default Databases;

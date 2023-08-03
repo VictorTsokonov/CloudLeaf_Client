@@ -1,0 +1,35 @@
+.variableContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.button {
+  display: inline-flex;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #110e0f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  border: 1.5px solid #0f8761;
+  font-family: "Comfortaa", cursive;
+  /* display: inline; */
+
+  cursor: pointer;
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+
+  /* position: absolute; Changed this line */
+  /* bottom: 20px; Changed this line */
+  /* right: 20px; Changed this line */
+}
+
+.input {
+  background-color: #110e0f;
+}

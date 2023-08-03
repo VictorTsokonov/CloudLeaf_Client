@@ -29,8 +29,8 @@
   margin-top: 0.5rem;
   color: #fff;
   font-family: "Comfortaa", cursive;
+  color: #fff;
   font-size: 1.25rem;
-  text-decoration: underline;
 }
 
 .input,
@@ -46,6 +46,7 @@
 
 .input {
   background-color: #110e0f;
+  height: 2.5rem;
 }
 
 .buttonContainer {
@@ -76,6 +77,57 @@
   /* position: absolute; Changed this line */
   /* bottom: 20px; Changed this line */
   /* right: 20px; Changed this line */
+}
+
+.envDiv {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* Add CSS to style the input containers for Key and Value */
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.buttonEnv {
+  display: inline-flex;
+  border: none;
+  border-radius: 10px;
+  border: 1.5px solid #0f8761;
+  font-family: "Comfortaa", cursive;
+  width: 30rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+.buttonEnv:hover {
+  cursor: pointer;
+  border-color: #03ff9e;
+}
+
+.deleteButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  border: 1.5px solid #c00030;
+  border-radius: 10px;
+  color: #fff;
+  outline: none;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.deleteButton {
+  border-color: #ff0040;
 }
 
 .languagesAndFrameworksContainer {

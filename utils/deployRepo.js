@@ -1,11 +1,20 @@
-async function deployRepo(fullName, cloneUrl, sshUrl, port, dependenciesList) {
+async function deployRepo(
+  fullName,
+  cloneUrl,
+  sshUrl,
+  port,
+  dependenciesList,
+  env
+) {
   const payload = {
     full_name: fullName,
     clone_url: cloneUrl,
     ssh_url: sshUrl,
     port: port,
     dependencies: dependenciesList,
+    environments: env,
   };
+  console.log(payload);
 
   const response = await fetch(`http://localhost:8080/api/deploy`, {
     method: "POST",

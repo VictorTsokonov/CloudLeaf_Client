@@ -2,9 +2,15 @@
   overflow: hidden;
 }
 
+.params {
+  display: inline;
+  font-family: "Comfortaa", cursive;
+  color: white; /* Make parameter titles white */
+}
+
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr auto;
   justify-items: start;
   gap: 10px;
   padding: 5px;
@@ -13,14 +19,18 @@
   border-bottom: 1px solid #bfc3c7;
   align-items: center;
   margin-top: 2px;
-  color: #bfc3c7;
+  color: white; /* Make other text white */
+  font-family: "Comfortaa", cursive;
 }
 
 .info {
   list-style: none;
   margin-bottom: 0;
   font-family: "Comfortaa", cursive;
+  color: #0a5e44; /* Make info text green */
 }
+
+/* ... rest of the CSS stays the same ... */
 
 .button {
   justify-self: end;
@@ -36,16 +46,20 @@
   background-color: #0a5e44;
 }
 
-.buttonTer {
-  justify-self: end;
-  margin-right: 1.2rem;
+.deleteButton {
+  position: absolute; /* Absolute positioning within the container */
+  bottom: 10px; /* Position from the bottom of the container */
+  right: 10px; /* Position from the right of the container */
   font-family: "Comfortaa", cursive;
-  background-color: #cd002c;
+  background-color: #cd002c; /* Red background */
+  color: #bfc3c7; /* Text color */
   padding: 5px;
-  padding-bottom: 2px;
   border-radius: 3px;
-  /* border: 2px solid #12ba85; */
-  color: #bfc3c7;
+  cursor: pointer; /* Hand cursor on hover */
+}
+
+.deleteButton:hover {
+  background-color: #ad0025; /* Darker red on hover */
 }
 
 .info::marker {
@@ -56,8 +70,4 @@
   /* border-color: #13b07f; */
   background-color: #0a5e44;
   /* color: #0f8761; */
-}
-
-.buttonTer:hover {
-  background-color: #ad0025;
 }

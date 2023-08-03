@@ -1,59 +1,42 @@
 import styles from "./databaseCard.module.css";
-import { useEffect, useState } from "react";
-import deployRepo from "../utils/deployRepo";
-import checkStatus from "../utils/checkStatus";
-import Link from "next/link";
+import deleteRDSDatabase from "@/utils/deleteRDSDatabase";
 
 function DatabaseCard({
-  cloneUrl,
-  sshUrl,
-  fullName,
-  repoStatus,
-  repoIp,
-  setConfiguration,
+  databaseName,
+  connectionUrl,
+  username,
+  port,
+  githubName,
 }) {
-  const [disabled, setDisabled] = useState(false);
-  const [ip, setIp] = useState(repoIp);
-  const [status, setStatus] = useState(repoStatus);
-  const name = fullName.split("/")[1];
-
-  async function terminateHandler() {
-    console.log("TERMINATE");
-    await fetch(`http://localhost:8080/api/deploy/${ip}`, {
-      method: "DELETE",
-    });
-    setIp("");
-    setStatus("Terminated");
-    setDisabled(false);
-  }
-
-  function ConfigurationHandler() {
-    setConfiguration({
-      isConfiguring: true,
-      cloneUrl: cloneUrl,
-      sshUrl: sshUrl,
-      fullName: fullName,
-    });
-    setDisabled(true);
-  }
-
   return (
     <div className={styles.table}>
       <div className={styles.container}>
-        <li className={styles.info}>{name}</li>
-        {status === "Deployed" ? (
-          <button className={styles.buttonTer} onClick={terminateHandler}>
-            Remove Database
-          </button>
-        ) : (
-          <button
-            className={styles.button}
-            onClick={ConfigurationHandler}
-            disabled={status === "Deploying..."}
-          >
-            Add Database
-          </button>
-        )}
+        <li className={styles.info}>
+          <div>
+            <h4 className={styles.params}>Database Name:</h4>{" "}
+            <span className={styles.info}>{databaseName}</span>
+          </div>
+          <div>
+            <h4 className={styles.params}>Connection URL:</h4>{" "}
+            <span className={styles.info}>{connectionUrl}</span>
+          </div>
+          <div>
+            <h4 className={styles.params}>Username:</h4>{" "}
+            <span className={styles.info}>{username}</span>
+          </div>
+          <div>
+            <h4 className={styles.params}>Port:</h4>{" "}
+            <span className={styles.info}>{port}</span>
+          </div>
+        </li>
+        <button
+          className={styles.deleteButton}
+          onClick={() => {
+            deleteRDSDatabase(githubName, databaseName);
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
