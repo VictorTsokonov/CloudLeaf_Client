@@ -1,8 +1,7 @@
-import styles from "./RepoCard.module.css";
-import { useEffect, useState } from "react";
-import deployRepo from "../utils/deployRepo";
-import checkStatus from "../utils/checkStatus";
-import Link from "next/link";
+import { API_BASE_URL } from '@/config'
+import styles from './RepoCard.module.css'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 function RepoCard({
   cloneUrl,
@@ -12,19 +11,19 @@ function RepoCard({
   repoIp,
   setConfiguration,
 }) {
-  const [disabled, setDisabled] = useState(false);
-  const [ip, setIp] = useState(repoIp);
-  const [status, setStatus] = useState(repoStatus);
-  const name = fullName.split("/")[1];
+  const [disabled, setDisabled] = useState(false)
+  const [ip, setIp] = useState(repoIp)
+  const [status, setStatus] = useState(repoStatus)
+  const name = fullName.split('/')[1]
 
   async function terminateHandler() {
-    console.log("TERMINATE");
-    await fetch(`http://localhost:8080/api/deploy/${ip}`, {
-      method: "DELETE",
-    });
-    setIp("");
-    setStatus("Terminated");
-    setDisabled(false);
+    console.log('TERMINATE')
+    await fetch(`${API_BASE_URL}/api/deploy/${ip}`, {
+      method: 'DELETE',
+    })
+    setIp('')
+    setStatus('Terminated')
+    setDisabled(false)
   }
 
   function ConfigurationHandler() {
@@ -33,8 +32,8 @@ function RepoCard({
       cloneUrl: cloneUrl,
       sshUrl: sshUrl,
       fullName: fullName,
-    });
-    setDisabled(true);
+    })
+    setDisabled(true)
   }
 
   return (
@@ -45,25 +44,28 @@ function RepoCard({
           ip: <Link href={`http://${ip}`}>{ip}</Link>
         </li>
         <li className={styles.info}>status: {status}</li>
-        {status === "Deployed" ? (
-          <button className={styles.buttonTer} onClick={terminateHandler}>
+        {status === 'Deployed' ? (
+          <button
+            className={styles.buttonTer}
+            onClick={terminateHandler}
+          >
             Terminate
           </button>
         ) : (
           <button
             className={styles.button}
             onClick={ConfigurationHandler}
-            disabled={status === "Deploying..."}
+            disabled={status === 'Deploying...'}
           >
             Configure
           </button>
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default RepoCard;
+export default RepoCard
 // key={repo.id}
 //               name={repo.name}
 //               cloneUrl={repo.clone_url}

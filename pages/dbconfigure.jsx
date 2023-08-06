@@ -1,29 +1,29 @@
-import { useReducer, useState } from "react";
-
-import styles from "./dbconfigure.module.css";
-import Router from "next/router";
-import { useUserData } from "@/contexts/UserDataContext";
-import deployRepo from "@/utils/deployRepo";
+import { useReducer, useState } from 'react'
+import { API_BASE_URL } from '@/config'
+import styles from './dbconfigure.module.css'
+import Router from 'next/router'
+import { useUserData } from '@/contexts/UserDataContext'
+import deployRepo from '@/utils/deployRepo'
 
 function DbConfigure() {
-  const { userData, setUserData } = useUserData(); // <- Use the hook
-  const [database, setDatabase] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { userData, setUserData } = useUserData() // <- Use the hook
+  const [database, setDatabase] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState('')
 
-  const deps = { Databases: ["PostgreSQL", "Redis", "MySQL"] };
+  const deps = { Databases: ['PostgreSQL', 'Redis', 'MySQL'] }
 
   const handleChange = (e) => {
-    setSelected(e.target.value);
-  };
+    setSelected(e.target.value)
+  }
 
   async function createHandler() {
     // Make sure all necessary fields are filled out
     if (!database || !username || !password || !selected) {
-      alert("Please fill out all the fields.");
-      return;
+      alert('Please fill out all the fields.')
+      return
     }
 
     // Create the payload
@@ -33,52 +33,58 @@ function DbConfigure() {
       username: username,
       password: password,
       type: selected,
-    };
+    }
 
-    Router.push("/databases");
+    Router.push('/databases')
 
     // Send the POST request
     try {
-      const response = await fetch("http://localhost:8080/api/createDatabase", {
-        method: "POST",
+      const response = await fetch(`${API_BASE_URL}/api/createDatabase`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-      });
+      })
 
       // Check if the request was successful
       if (response.ok) {
-        alert("Database created successfully.");
+        alert('Database created successfully.')
       } else {
-        const errorData = await response.json();
-        alert(`Failed to create database: ${errorData.error}`);
+        const errorData = await response.json()
+        alert(`Failed to create database: ${errorData.error}`)
       }
     } catch (error) {
-      console.error("An error occurred:", error);
-      alert("Failed to create database. Please try again.");
+      console.error('An error occurred:', error)
+      alert('Failed to create database. Please try again.')
     }
-    Router.back();
+    Router.back()
   }
 
   function BackHandler() {
-    console.log(username, password, database, selected, userData.login);
-    Router.back();
+    console.log(username, password, database, selected, userData.login)
+    Router.back()
   }
 
   return (
     <div className={styles.configureContainer}>
       <div className={styles.configureContent}>
         {Object.keys(deps).map((category) => (
-          <div key={category} className={styles.category}>
+          <div
+            key={category}
+            className={styles.category}
+          >
             <label className={styles.label}>{category}:</label>
             <div className={styles.dependenciesSubContainer}>
               <div className={styles.gridContainer}>
                 {deps[category].map((dependency, index) => (
-                  <div key={index} className={styles.dependencyItem}>
+                  <div
+                    key={index}
+                    className={styles.dependencyItem}
+                  >
                     <label>
                       <input
-                        type="radio"
+                        type='radio'
                         className={styles.checkbox}
                         value={dependency}
                         checked={selected === dependency}
@@ -97,7 +103,7 @@ function DbConfigure() {
           Database:
           <input
             className={styles.input}
-            type="text"
+            type='text'
             value={database}
             onChange={(e) => setDatabase(e.target.value)}
           />
@@ -106,7 +112,7 @@ function DbConfigure() {
           Username:
           <input
             className={styles.input}
-            type="text"
+            type='text'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -115,22 +121,28 @@ function DbConfigure() {
           Password:
           <input
             className={styles.input}
-            type="text"
+            type='text'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
       </div>
       <div className={styles.buttonContainer}>
-        <button className={styles.button} onClick={BackHandler}>
+        <button
+          className={styles.button}
+          onClick={BackHandler}
+        >
           Back
         </button>
-        <button className={styles.button} onClick={createHandler}>
+        <button
+          className={styles.button}
+          onClick={createHandler}
+        >
           Create
         </button>
       </div>
     </div>
-  );
+  )
 }
 
-export default DbConfigure;
+export default DbConfigure

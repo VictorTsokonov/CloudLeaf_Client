@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@/config'
 async function deployRepo(
   fullName,
   cloneUrl,
@@ -13,22 +14,22 @@ async function deployRepo(
     port: port,
     dependencies: dependenciesList,
     environments: env,
-  };
-  console.log(payload);
+  }
+  console.log(payload)
 
-  const response = await fetch(`http://localhost:8080/api/deploy`, {
-    method: "POST",
+  const response = await fetch(`${API_BASE_URL}/api/deploy`, {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
-export default deployRepo;
+export default deployRepo

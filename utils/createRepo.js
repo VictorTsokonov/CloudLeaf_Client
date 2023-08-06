@@ -1,39 +1,35 @@
-// user_id
-// other info
-// list of repos
-// http://localhost:8080/api/repos?userID=f34c13ed-cd5a-4f6b-b1d2-db3a522af2f9&repoName=VerySmartGuy&cloneUrl=testCloneUrl&sshUrl=WhatIsSSHha
-// for every repo get repoName, cloneUrl, sshUrl
+import { API_BASE_URL } from '@/config'
 async function createRepos(userID, repos) {
-  const results = [];
-  const promises = [];
+  const results = []
+  const promises = []
 
   repos.forEach((repo) => {
-    const { full_name, clone_url, ssh_url } = repo;
+    const { full_name, clone_url, ssh_url } = repo
     const promise = fetch(
-      `http://localhost:8080/api/repos?userID=${userID}&repoName=${full_name}&cloneUrl=${clone_url}&sshUrl=${ssh_url}&status=Not Deployed`,
+      `${API_BASE_URL}/api/repos?userID=${userID}&repoName=${full_name}&cloneUrl=${clone_url}&sshUrl=${ssh_url}&status=Not Deployed`,
       {
-        method: "POST",
+        method: 'POST',
       }
     ).then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      return response.json();
-    });
+      return response.json()
+    })
 
-    promises.push(promise);
-  });
+    promises.push(promise)
+  })
 
   await Promise.all(promises).then((responses) => {
     responses.forEach((repo) => {
-      results.push(repo);
-    });
-  });
+      results.push(repo)
+    })
+  })
 
-  return results;
+  return results
 }
-export default createRepos;
+export default createRepos
 
 // Usage:
 // const userID = 'uuid1';

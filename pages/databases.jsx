@@ -1,46 +1,46 @@
-import styles from "./Repos.module.css";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { useUserData } from "@/contexts/UserDataContext";
-import Dashboard from "@/components/dashboard";
-import DatabaseCard from "@/components/databaseCard";
-
+import styles from './Repos.module.css'
+import Image from 'next/image'
+import { useCallback, useEffect, useState } from 'react'
+import { useUserData } from '@/contexts/UserDataContext'
+import Dashboard from '@/components/dashboard'
+import DatabaseCard from '@/components/databaseCard'
+import { API_BASE_URL } from '@/config'
 function Databases() {
-  const { userData } = useUserData();
-  const [databases, setDatabases] = useState([]);
+  const { userData } = useUserData()
+  const [databases, setDatabases] = useState([])
 
   const getDbParameters = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/ssm/parameters?githubName=${userData.login}`
-      );
+        `${API_BASE_URL}/api/ssm/parameters?githubName=${userData.login}`
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const parameters = await response.json();
-      console.log(`DB Parameters for ${userData.login}:`, parameters);
-      setDatabases(parameters);
+      const parameters = await response.json()
+      console.log(`DB Parameters for ${userData.login}:`, parameters)
+      setDatabases(parameters)
     } catch (error) {
-      console.error("Error fetching DB parameters:", error);
+      console.error('Error fetching DB parameters:', error)
     }
-  }, [userData.login]);
+  }, [userData.login])
 
   useEffect(() => {
     // Immediately invoke the function
-    getDbParameters();
+    getDbParameters()
 
     // Set an interval to run the function every 5 seconds
     const intervalId = setInterval(() => {
-      getDbParameters();
-    }, 5000); // 5000 milliseconds (5 seconds)
+      getDbParameters()
+    }, 5000) // 5000 milliseconds (5 seconds)
 
     // Return a cleanup function to clear the interval when the component is unmounted
     return () => {
-      clearInterval(intervalId);
-    };
+      clearInterval(intervalId)
+    }
 
     // Include getDbParameters in the dependency array to ensure that the effect is updated if it changes
-  }, [getDbParameters]);
+  }, [getDbParameters])
 
   return (
     <div className={styles.main}>
@@ -50,8 +50,8 @@ function Databases() {
           <div className={styles.header}>
             <h1>
               <Image
-                src="/repo.svg"
-                alt="Repository Icon"
+                src='/repo.svg'
+                alt='Repository Icon'
                 width={20}
                 height={20}
                 className={styles.repoImg}
@@ -72,7 +72,7 @@ function Databases() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Databases;
+export default Databases
